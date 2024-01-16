@@ -44,8 +44,7 @@ class VectorStore:
         # Create vector cache
         index_to_docstore_id = self.db.index_to_docstore_id
         for i in range(len(documents)):
-            document = self.db.docstore.search(index_to_docstore_id[i])
-            if document:
+            if document := self.db.docstore.search(index_to_docstore_id[i]):
                 # Check if the document is already present in the vector cache
                 # if yes, then add the vector id to the vector cache entry
                 if self.vector_cache.get(document.metadata["filename"]):
@@ -97,21 +96,16 @@ class VectorStore:
                         ],
                         document.metadata["commit_hash"],
                     )
-                # In this case the document was already present.
-                # Now it needs to be further checkd if the document has been modified or not
-                # since the commit hash might has been replaced already in the first if condition
-                else:
-                    if document.metadata["filename"] in modified_filenames:
-                        self.db.add_documents([document])
-                        self.vector_cache[
-                            document.metadata["filename"]
-                        ].vector_ids.append(
-                            self.db.index_to_docstore_id[
-                                len(self.db.index_to_docstore_id) - 1
-                            ]
-                        )
+                elif document.metadata["filename"] in modified_filenames:
+                    self.db.add_documents([document])
+                    self.vector_cache[
+                        document.metadata["filename"]
+                    ].vector_ids.append(
+                        self.db.index_to_docstore_id[
+                            len(self.db.index_to_docstore_id) - 1
+                        ]
+                    )
 
-            # if no, then create a new entry in the vector cache and add the document to the vector store
             else:
                 self.db.add_documents([document])
                 self.vector_cache[document.metadata["filename"]] = VectorCache(

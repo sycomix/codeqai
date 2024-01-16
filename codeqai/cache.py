@@ -27,23 +27,23 @@ class VectorCache:
 
 
 def load_vector_cache(filename) -> Dict[str, VectorCache]:
-    with open(get_cache_path() + "/" + filename, "r") as vector_cache_file:
+    with open(f"{get_cache_path()}/{filename}", "r") as vector_cache_file:
         vector_cache_json = json.load(vector_cache_file)
-    vector_cache = {}
-    for key, value in vector_cache_json.items():
-        vector_cache[key] = VectorCache.from_json(value)
-    return vector_cache
+    return {
+        key: VectorCache.from_json(value)
+        for key, value in vector_cache_json.items()
+    }
 
 
 def save_vector_cache(vector_cache, filename):
-    with open(get_cache_path() + "/" + filename, "w") as vector_cache_file:
+    with open(f"{get_cache_path()}/{filename}", "w") as vector_cache_file:
         json.dump(vector_cache, default=VectorCache.to_json, fp=vector_cache_file)
 
 
 def get_cache_path():
     system = platform.system()
 
-    if system == "Linux" or system == "Darwin":
+    if system in ["Linux", "Darwin"]:
         user_home = os.path.expanduser("~")
         cache_dir = os.path.join(user_home, ".cache", "codeqai")
     elif system == "Windows":

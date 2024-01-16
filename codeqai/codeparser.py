@@ -21,9 +21,9 @@ def parse_code_files(code_files: list[str]) -> list[Document]:
             if programming_language == Language.UNKNOWN:
                 continue
 
-            langchain_language = utils.get_langchain_language(programming_language)
-
-            if langchain_language:
+            if langchain_language := utils.get_langchain_language(
+                programming_language
+            ):
                 code_splitter = RecursiveCharacterTextSplitter.from_language(
                     language=langchain_language,
                     chunk_size=512,

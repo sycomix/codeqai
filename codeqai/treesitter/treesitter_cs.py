@@ -15,12 +15,11 @@ class TreesitterCsharp(Treesitter):
         first_match = None
         if node.type == self.method_declaration_identifier:
             for child in node.children:
-                # if the return type is an object type, then the method name
-                # is the second match
-                if child.type == self.method_name_identifier and not first_match:
-                    first_match = child.text.decode()
-                elif child.type == self.method_name_identifier and first_match:
-                    return child.text.decode()
+                if child.type == self.method_name_identifier:
+                    if first_match:
+                        return child.text.decode()
+                    else:
+                        first_match = child.text.decode()
         return first_match
 
     def _query_all_methods(self, node: tree_sitter.Node):
@@ -44,10 +43,10 @@ class TreesitterCsharp(Treesitter):
                     else:
                         current_doc_comment_node = None
 
-            doc_comment_str = ""
             doc_comment_nodes.reverse()
-            for doc_comment_node in doc_comment_nodes:
-                doc_comment_str += doc_comment_node + "\n"
+            doc_comment_str = "".join(
+                doc_comment_node + "\n" for doc_comment_node in doc_comment_nodes
+            )
             if doc_comment_str.strip() != "":
                 methods.append({"method": node, "doc_comment": doc_comment_str.strip()})
             else:

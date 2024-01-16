@@ -12,7 +12,7 @@ from codeqai.constants import EmbeddingsModel, LlmHost
 def get_config_path():
     system = platform.system()
 
-    if system == "Linux" or system == "Darwin":
+    if system in ["Linux", "Darwin"]:
         user_home = os.path.expanduser("~")
         config_dir = os.path.join(user_home, ".config", "codeqai")
     elif system == "Windows":
@@ -21,9 +21,7 @@ def get_config_path():
     else:
         raise NotImplementedError(f"Unsupported platform: {system}")
 
-    config_file_path = os.path.join(config_dir, "config.yaml")
-
-    return config_file_path
+    return os.path.join(config_dir, "config.yaml")
 
 
 def load_config():

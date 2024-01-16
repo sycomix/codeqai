@@ -29,11 +29,11 @@ class TreesitterPython(Treesitter):
         return None
 
     def _query_all_methods(self, node: tree_sitter.Node):
-        methods = []
-        for child in node.children:
-            if child.type == self.method_declaration_identifier:
-                methods.append(child)
-        return methods
+        return [
+            child
+            for child in node.children
+            if child.type == self.method_declaration_identifier
+        ]
 
     def _query_doc_comment(self, node: tree_sitter.Node):
         query_code = """
@@ -41,9 +41,7 @@ class TreesitterPython(Treesitter):
                 body: (block . (expression_statement (string)) @function_doc_str))
         """
         doc_str_query = self.language.query(query_code)
-        doc_strs = doc_str_query.captures(node)
-
-        if doc_strs:
+        if doc_strs := doc_str_query.captures(node):
             return doc_strs[0][0].text.decode()
         else:
             return None
