@@ -6,8 +6,7 @@ from git.repo import Repo
 
 def get_git_root(path):
     git_repo = Repo(path, search_parent_directories=True)
-    git_root = git_repo.git.rev_parse("--show-toplevel")
-    return git_root
+    return git_repo.git.rev_parse("--show-toplevel")
 
 
 def find_file_in_git_repo(file_name):
@@ -46,10 +45,7 @@ def get_commit_hash(file_path):
             check=True,
         )
 
-        # Extract the commit hash from the command output
-        commit_hash = result.stdout.strip()
-        return commit_hash
-
+        return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         print(f"Error executing git command: {e}")
         return None

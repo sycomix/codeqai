@@ -30,10 +30,10 @@ class TreesitterRust(Treesitter):
                     else:
                         current_doc_comment_node = None
 
-            doc_comment_str = ""
             doc_comment_nodes.reverse()
-            for doc_comment_node in doc_comment_nodes:
-                doc_comment_str += doc_comment_node + "\n"
+            doc_comment_str = "".join(
+                doc_comment_node + "\n" for doc_comment_node in doc_comment_nodes
+            )
             if doc_comment_str.strip() != "":
                 methods.append({"method": node, "doc_comment": doc_comment_str.strip()})
             else:

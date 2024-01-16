@@ -35,24 +35,19 @@ def env_loader(env_path, required_keys=None):
             if required_keys:
                 for key in required_keys:
                     env_f.write(f'{key}=""\n')
-            else:
-                pass
-
     configs = dotenv_values(env_path)
     changed = False
     for key, value in configs.items():
         env_key = os.getenv(key)
-        if not value and not env_key:
-            value = input(
-                f"[+] Key {utils.get_bold_text(key)} is required. Please enter it's value: "
-            )
-            configs[key] = value
+        if not value:
+            if not env_key:
+                value = input(
+                    f"[+] Key {utils.get_bold_text(key)} is required. Please enter it's value: "
+                )
+            else:
+                value = env_key
             changed = True
-        elif not value and env_key:
-            value = env_key
             configs[key] = value
-            changed = True
-
     # update the .env file if config is changed/taken from user
     if changed:
         with open(env_path, "w") as env_f:
@@ -207,7 +202,7 @@ def run():
                 memory.clear()
                 print("Chat history cleared.")
 
-        if choice == "" or choice == "c":
+        if choice in ["", "c"]:
             continue
         elif choice == "e":
             break

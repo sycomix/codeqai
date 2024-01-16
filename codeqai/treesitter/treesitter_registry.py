@@ -10,8 +10,7 @@ class TreesitterRegistry:
 
     @classmethod
     def create_treesitter(cls, name: Language):
-        treesitter_class = cls._registry.get(name)
-        if treesitter_class:
+        if treesitter_class := cls._registry.get(name):
             return treesitter_class()
         else:
             raise ValueError("Invalid tree type")
